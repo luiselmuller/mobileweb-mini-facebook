@@ -5,13 +5,13 @@ import javax.servlet.*;
 
 import ut.JAR.socialnet.*;
 
-public class VerifyServlet extends HttpServlet 
+public class AdminVerifyServlet extends HttpServlet 
 {
-    private static final long serialVersionUID = 7L;
+    private static final long serialVersionUID = 6L;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
-        // Forward to the signup page
-        request.getRequestDispatcher("/socialnet/login.jsp").forward(request, response);
+        // Forward to the signin page
+        request.getRequestDispatcher("/socialnet/adminlogin.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
@@ -22,35 +22,34 @@ public class VerifyServlet extends HttpServlet
         String password = request.getParameter("password");
 
         // Create the authenticator object
-        UserAuthenticator auth = new UserAuthenticator();
-        ApplicationDBManager manager = new ApplicationDBManager();
+        AdminAuthenticator adminAuth = new AdminAuthenticator();
+        AdminDBManager adminManager = new AdminDBManager();
 
         try 
         {
             // Authenticate the user
-            int[] res = auth.authenticate(email, password);
+            int[] res = adminAuth.authenticate(email, password);
 
             // Verify the user
             if (res[0] > 0) 
             {
                 // Set session attribute
                 HttpSession session = request.getSession();
-                session.setAttribute("email", email);
-                session.setAttribute("userId", res[0]);
                 session.setAttribute("roleId", res[1]);
-                manager.getUserInfo((int) session.getAttribute("userId"), session);
-                response.sendRedirect("/socialnet/timeline.jsp");
+                session.setAttribute("userId", res[0]);
+                adminManager.getAdminInfo((int) session.getAttribute("userId"), session);
+                response.sendRedirect("/socialnet/adminpanel.jsp");
             } 
             else 
             {
                 // Close associated sessions
                 HttpSession session = request.getSession();
                 session.setAttribute("email", null);
-                response.sendRedirect("/socialnet/login.jsp");
+                response.sendRedirect("/socialnet/index.jsp");
             }
 
             // Close database connection
-            auth.close();
+            adminAuth.close();
         } 
         catch (Exception e) 
         {

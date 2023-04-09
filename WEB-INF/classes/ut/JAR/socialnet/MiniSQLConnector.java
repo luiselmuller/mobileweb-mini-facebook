@@ -219,6 +219,12 @@ public class MiniSQLConnector
         return conn.prepareStatement(sql);
     }
 
+    // for user ids
+    public PreparedStatement prepareStatement(String sql, int generatedKeys) throws SQLException
+    {
+        return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    }
+
 
     /**
      *  Debugging method

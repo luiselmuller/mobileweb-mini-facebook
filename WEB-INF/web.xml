@@ -26,6 +26,8 @@
   <description>
      Welcome to Tomcat
   </description>
+  
+  <!-- USER SERVLETS -->
 
   <servlet>
     <servlet-name>RegisterServlet</servlet-name>
@@ -33,7 +35,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
-    <url-pattern>/RegisterServlet</url-pattern>
+    <url-pattern>/register/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -42,7 +44,66 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>VerifyServlet</servlet-name>
-    <url-pattern>/VerifyServlet</url-pattern>
+    <url-pattern>/auth/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserDetServlet</servlet-name>
+    <servlet-class>UserDetServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserDetServlet</servlet-name>
+    <url-pattern>/user/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserImageServlet</servlet-name>
+    <servlet-class>UserImageServlet</servlet-class>
+    <multipart-config>
+      <location>D:\apache-tomcat-8.5.85\webapps\ROOT\socialnet\profile_pictures\</location>
+      <max-file-size>20848820</max-file-size>
+      <max-request-size>418018841</max-request-size>
+      <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserImageServlet</servlet-name>
+    <url-pattern>/user/profile-picture/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- ADMIN SERVLETS -->
+
+  <servlet>
+    <servlet-name>AdminVerifyServlet</servlet-name>
+    <servlet-class>AdminVerifyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminVerifyServlet</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AdminDetServlet</servlet-name>
+    <servlet-class>AdminDetServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminDetServlet</servlet-name>
+    <url-pattern>/admin/info/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AdminImageServlet</servlet-name>
+    <servlet-class>AdminImageServlet</servlet-class>
+    <multipart-config>
+      <location>D:\apache-tomcat-8.5.85\webapps\ROOT\socialnet\profile_pictures\</location>
+      <max-file-size>20848820</max-file-size>
+      <max-request-size>418018841</max-request-size>
+      <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminImageServlet</servlet-name>
+    <url-pattern>/admin/profile-picture/*</url-pattern>
   </servlet-mapping>
   
 </web-app>

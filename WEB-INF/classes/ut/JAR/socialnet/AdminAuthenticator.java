@@ -5,11 +5,11 @@ import java.sql.*;
 import org.apache.commons.codec.*;
 
 // TODO: Make separate for admin
-public class UserAuthenticator
+public class AdminAuthenticator
 {
     private MiniSQLConnector dbConn;
 
-    public UserAuthenticator()
+    public AdminAuthenticator()
     {
         dbConn = new MiniSQLConnector();
 
@@ -18,11 +18,11 @@ public class UserAuthenticator
 
     public int[] authenticate(String email, String password) throws SQLException
     {
-        String tables = "user";
+        String tables = "admin";
 
         String fields = "id, email, salt, password, role_id";
 
-        String whereClause = "user.email = ?";
+        String whereClause = "admin.email = ?";
 
         PreparedStatement pst = dbConn.prepareStatement("SELECT " + fields + " FROM " + tables + " WHERE " + whereClause);
 
@@ -59,7 +59,7 @@ public class UserAuthenticator
 
     public void close()
 	{
-		//Close the connection
+		// Close the connection
 		dbConn.closeConnection();
 	}
 }

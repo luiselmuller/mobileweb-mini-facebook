@@ -8,7 +8,7 @@ import ut.JAR.socialnet.*;
 public class RegisterServlet extends HttpServlet 
 {
     private static final long serialVersionUID = 1L;
-    
+
     public void init() throws ServletException
     {
         // Initialize
@@ -40,10 +40,7 @@ public class RegisterServlet extends HttpServlet
             // Verify if the user was added
             if (res > 0) 
             {
-                // Set session attribute
-                HttpSession session = request.getSession();
-                session.setAttribute("email", email);
-                response.sendRedirect("/socialnet/timeline.jsp");
+                response.sendRedirect("/socialnet/login.jsp");
             } 
             else 
             {
@@ -60,7 +57,7 @@ public class RegisterServlet extends HttpServlet
         {
             HttpSession session = request.getSession();
             session.setAttribute("email", null);
-            response.getWriter().println("User already exists!");
+            response.getWriter().println("User already exists");
             e.printStackTrace();
         } 
     }
