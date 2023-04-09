@@ -27,7 +27,6 @@ CREATE TABLE `education` (
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `education_FK_1` (`user_id`),
-  CONSTRAINT `education_FK` FOREIGN KEY (`user_id`) REFERENCES `admin` (`id`),
   CONSTRAINT `education_FK_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -40,8 +39,6 @@ CREATE TABLE `follow` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unq_follow_follower_id` (`follower_id`),
   UNIQUE KEY `unq_follow_following_id` (`following_id`),
-  CONSTRAINT `follow_FK` FOREIGN KEY (`follower_id`) REFERENCES `admin` (`id`),
-  CONSTRAINT `follow_FK_1` FOREIGN KEY (`following_id`) REFERENCES `admin` (`id`),
   CONSTRAINT `follow_FK_2` FOREIGN KEY (`follower_id`) REFERENCES `user` (`id`),
   CONSTRAINT `follow_FK_3` FOREIGN KEY (`following_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -56,7 +53,6 @@ CREATE TABLE `location` (
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `location_FK_1` (`user_id`),
-  CONSTRAINT `location_FK` FOREIGN KEY (`user_id`) REFERENCES `admin` (`id`),
   CONSTRAINT `location_FK_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
