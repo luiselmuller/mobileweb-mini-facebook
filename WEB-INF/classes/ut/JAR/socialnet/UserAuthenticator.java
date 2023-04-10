@@ -1,3 +1,14 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document contans the methods and classes for the user authentication with DB.
+ * The UserAuthenticator class responsible for authenticating user credentials and returning user role ID and user ID
+ */
+
 package ut.JAR.socialnet;
 
 import java.sql.*;
@@ -9,6 +20,9 @@ public class UserAuthenticator
 {
     private MiniSQLConnector dbConn;
 
+    /**
+     * Constructor that initializes a MiniSQLConnector object and connects to the database
+     */
     public UserAuthenticator()
     {
         dbConn = new MiniSQLConnector();
@@ -16,6 +30,14 @@ public class UserAuthenticator
         dbConn.doConnection();
     }
 
+    /**
+    * Authenticates user credentials and returns user role ID and user ID or 0 if authentication fails.
+    *
+    * @param email    the email of the user to authenticate.
+    * @param password the password of the user to authenticate.
+    * @return an integer array containing user ID and role ID if authentication is successful, or an array containing 0 otherwise.
+    * @throws SQLException if a database access error occurs or this method is called on a closed connection.
+    */
     public int[] authenticate(String email, String password) throws SQLException
     {
         String tables = "user";
@@ -57,6 +79,9 @@ public class UserAuthenticator
         }
     }
 
+    /**
+     * Closes the connection to the database
+     */
     public void close()
 	{
 		//Close the connection

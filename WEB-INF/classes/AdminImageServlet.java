@@ -1,32 +1,66 @@
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document is the class for the handling of HTTP requests related to updating the 
+ * administrator user profile pictures.
+ * The image (png, jpg or gif) is saved to the server file system while the path of the file is 
+ * stored into the database.
+ * 
+ */
 
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import javax.servlet.*;
-import javax.servlet.http.Part;
-import java.nio.file.*;
-import javax.servlet.http.HttpServletResponse;
-
-import ut.JAR.socialnet.*;
+ import java.io.ByteArrayOutputStream;            //for binary data into byte arrays
+ import java.io.FileOutputStream;                 //class for output stream bytes to a file
+ import java.io.IOException;                      //base class for exceptions thrown
+ import java.io.InputStream;                      //for reading bytes from byte stream
+ import java.sql.SQLException;                    //for sql error exceptions
+ 
+ import javax.servlet.ServletException;           //for servlet exceptions
+ import javax.servlet.http.*;                     //for servlet classes running under HTTP
+ import javax.servlet.*;                          //for creating servlets
+ import javax.servlet.http.Part;                  //for file uploads from web
+ import java.nio.file.*;                          //for file system I/O 
+ import javax.servlet.http.HttpServletResponse;   //for handling possible unsupported media types
+ 
+ import ut.JAR.socialnet.*;                       //location of the socialnet java files
 
 public class AdminImageServlet extends HttpServlet
 {
     private static final long serialVersionUID = 12L;
 
+    /**
+     * Initializing servlet
+     * @throws ServletException
+     */
     public void init() throws ServletException
     {
         
     }
 
+     /**
+     * This function handles the GET requests from administrator details profile page
+     * 
+     * @param request : HTTPServletRequest object for request from client adminprofile
+     * @param response : HTTPServletResponse object for response of server to client from adminprofile
+     * @throws ServletException : thrown when server errors may occur when requesting
+     * @throws IOException : thrown when data transfer error may occur
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         request.getRequestDispatcher("/socialnet/adminprofile.jsp").forward(request, response);
     }
 
+    /**
+     * This function handles HTTP POST requests for updating or saving administrator user profile pictures.
+     *  
+     * @param request : HTTPServletRequest object for request from client adminprofile
+     * @param response : HTTPServletResponse object for response of server to client from adminprofile
+     * @throws ServletException : thrown when server errors may occur when requesting
+     * @throws IOException : thrown when data transfer error may occur
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -94,6 +128,12 @@ public class AdminImageServlet extends HttpServlet
         response.sendRedirect("/socialnet/adminprofile.jsp");
     }
 
+    /**
+     * This function replaces any character on input filenames that is not a letter, number, dot or hyphen.
+     * @param name : The input filename to be sanitized.
+     * @return : The sanitized filename.
+     * @throws IllegalArgumentException : if the input filename is null.
+     */
     private String sanitizeFileName(String name)
     {
         if(name == null) 
@@ -104,6 +144,12 @@ public class AdminImageServlet extends HttpServlet
         return name.replaceAll("[^a-zA-Z0-9.-]", "_");
     }
 
+    /**
+     * This method extracts the filename from the content-disposition header of the given file part.
+     * 
+     * @param file : The file part from which to extract the filename
+     * @return : The filename extracted from the file part, or null if the header is null.
+     */
     // Getting the filename for the file part
     private String getFileName(final Part file) 
     {

@@ -1,3 +1,12 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This is the connector to the database
+ */
 package ut.JAR.socialnet;
 
 // Package for managing ResultSet objects

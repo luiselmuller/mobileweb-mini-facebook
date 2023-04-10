@@ -1,3 +1,14 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document contans the methods and classes for the Admin Verifiyng.
+ * 
+ */
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -8,12 +19,29 @@ import ut.JAR.socialnet.*;
 public class AdminVerifyServlet extends HttpServlet 
 {
     private static final long serialVersionUID = 6L;
+
+    /**
+     * Handles the GET request and forwards the request to the admin login page
+     * 
+     * @param request HttpServletRequest object that contains the request the client has made of the servlet
+     * @param response HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if there is an error handling the request
+     * @throws IOException if an I/O error occurs
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         // Forward to the signin page
         request.getRequestDispatcher("/socialnet/adminlogin.jsp").forward(request, response);
     }
 
+    /**
+     * Handles the POST request and authenticates the admin and sets session attributes accordingly
+     * 
+     * @param request HttpServletRequest object that contains the request the client has made of the servlet
+     * @param response HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if there is an error handling the request
+     * @throws IOException if an I/O error occurs
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
 

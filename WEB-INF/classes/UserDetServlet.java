@@ -1,3 +1,13 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document contans the methods and classes for the User profile details.
+ * 
+ */
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -12,16 +22,37 @@ public class UserDetServlet extends HttpServlet
 {
     private static final long serialVersionUID = 3L;
 
+    /**
+     * Called by the servlet container to indicate to a servlet that the servlet is being placed into service.
+     * @throws ServletException if there is a servlet-related problem.
+     */
     public void init() throws ServletException
     {
         
     }
 
+    /**
+     * Handles HTTP GET requests. It forwards the request to the profile.jsp page.
+     * 
+     * @param request HttpServletRequest object that contains the request the client has made of the servlet
+     * @param response HttpServletResponse object that contains the response the servlet sends to the client.
+     * @throws ServletException  if there is a servlet-related problem
+     * @throws IOException if there is an I/O problem
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         request.getRequestDispatcher("/socialnet/profile.jsp").forward(request, response);
     }
 
+    /**
+     * Updates the user information in the database based on the form values received in the request,
+     * and sets the corresponding fields in the session attributes
+     * 
+     * @param request HttpServletRequest object that contains the request the client has made of the servlet
+     * @param response HttpServletResponse object that contains the response the servlet sends to the client.
+     * @throws ServletException if there is a servlet-related problem
+     * @throws IOException if there is an I/O problem
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {

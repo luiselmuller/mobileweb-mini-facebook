@@ -1,3 +1,14 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document contans the methods and classes for the User profile image.
+ * 
+ */
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,11 +28,28 @@ public class UserImageServlet extends HttpServlet
 {
     private static final long serialVersionUID = 9L;
 
+    /**
+     * This method handles HTTP GET requests to display the user profile page
+     * 
+     * @param request  HttpServletRequest object that contains the client's request
+     * @param response  HttpServletResponse object that contains the servlet's response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         request.getRequestDispatcher("/socialnet/profile.jsp").forward(request, response);
     }
 
+    /**
+     * Handles HTTP POST requests sent to the servlet to update a user's profile picture. 
+     * If the uploaded file is an image file, the file is saved to the server and the file path is updated in the database
+     * 
+     * @param request HttpServletRequest object that contains the client's request
+     * @param response HttpServletResponse object that contains the servlet's response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -98,6 +126,13 @@ public class UserImageServlet extends HttpServlet
         }
     }
 
+    /**
+     * Sanitizes a given file name to ensure that it only contains letters, numbers, dots, and hyphens.
+     * 
+     * @param name the file name to be sanitized
+     * @return sanitized file name
+     * @throws IllegalArgumentException if the file name is null
+     */
     private String sanitizeFileName(String name)
     {
         if(name == null) 
@@ -109,6 +144,12 @@ public class UserImageServlet extends HttpServlet
     }
 
     // Getting the filename for the file part
+    /**
+     *  Returns the filename of a given Part file object extracted from its content-disposition header.
+     * 
+     * @param file  The Part file object to extract the filename from.
+     * @return String representing the filename of the Part file object, or null if it could not be extracted
+     */
     private String getFileName(final Part file) 
     {
         String header = file.getHeader("content-disposition");

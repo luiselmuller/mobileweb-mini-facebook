@@ -1,3 +1,12 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This class is the administrator class responsible of handling admin info from the database.
+ */
 package ut.JAR.socialnet;
 
 import java.sql.*;
@@ -9,6 +18,10 @@ public class AdminAuthenticator
 {
     private MiniSQLConnector dbConn;
 
+    /**
+    * Constructor for AdminAuthenticator class that creates a new instance of the MiniSQLConnector class and
+    * establishes a connection to the database.
+    */
     public AdminAuthenticator()
     {
         dbConn = new MiniSQLConnector();
@@ -16,6 +29,14 @@ public class AdminAuthenticator
         dbConn.doConnection();
     }
 
+    /**
+    * Method to authenticate the admin user by retrieving their information from the database and checking if their entered password matches their stored password after being hashed.
+    * @param email The email address entered by the admin user
+    * @param password The password entered by the admin user
+    * @return an array of integers that represents the admin user's id and role id if the authentication was successful,
+    * or an array containing the value 0 if the authentication failed (either due to incorrect password or non-existent user).
+    * @throws SQLException if there is an error executing the SQL statement.
+    */
     public int[] authenticate(String email, String password) throws SQLException
     {
         String tables = "admin";
@@ -57,6 +78,9 @@ public class AdminAuthenticator
         }
     }
 
+    /**
+     * Closes connection to the database
+     */
     public void close()
 	{
 		// Close the connection

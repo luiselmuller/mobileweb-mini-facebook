@@ -1,3 +1,12 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This class is the Admin manager for the database info.
+ */
 package ut.JAR.socialnet;
 
 // Package for managing ResultSet objects
@@ -48,6 +57,14 @@ public class AdminDBManager
      ***************************************************************************/
 
     // dob, gender, pfp
+    /**
+     * Updates the date of birth and gender for an administrator in the database
+     * @parameters: userId - an integer representing the ID of the administrator to update
+     *              dob - a String representing the new date of birth for the administrator
+     *              gender - a String representing the new gender for the administrator
+     * @returns:
+     * @throws: SQLException
+     */
     public void updateAdminInfo(int userId, String dob, String gender) throws SQLException
     {
         String updateQuery = "UPDATE admin SET dob = ?, gender = ? WHERE id = ?";
@@ -58,6 +75,13 @@ public class AdminDBManager
         ust.executeUpdate();
     }
 
+    /**
+     * Updates the profile picture for an administrator in the database
+     * @parameters: userId - an integer representing the ID of the administrator to update
+     *              pfp - a String representing the new file path for the administrator's profile picture
+     * @returns:
+     * @throws: SQLException
+     */
     public void updateAdminImage(int userId, String pfp) throws SQLException
     {
         String updateQuery = "UPDATE admin SET profile_picture = ? WHERE id = ?";
