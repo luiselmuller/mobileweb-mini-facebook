@@ -57,6 +57,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>UserSearchServlet</servlet-name>
+    <servlet-class>UserSearchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserSearchServlet</servlet-name>
+    <url-pattern>/search/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>UserImageServlet</servlet-name>
     <servlet-class>UserImageServlet</servlet-class>
     <multipart-config>
@@ -104,6 +113,16 @@
   <servlet-mapping>
     <servlet-name>AdminImageServlet</servlet-name>
     <url-pattern>/admin/profile-picture/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserManagementServlet</servlet-name>
+    <servlet-class>UserManagementServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserManagementServlet</servlet-name>
+    <!-- done like this so users don't get redirected to a broken page url -->
+    <url-pattern>/socialnet/usermanager/*</url-pattern> 
   </servlet-mapping>
   
 </web-app>

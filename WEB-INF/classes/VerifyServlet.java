@@ -36,9 +36,9 @@ public class VerifyServlet extends HttpServlet
                 // Set session attribute
                 HttpSession session = request.getSession();
                 session.setAttribute("email", email);
-                session.setAttribute("userId", res[0]);
+                session.setAttribute("userUserId", res[0]);
                 session.setAttribute("roleId", res[1]);
-                manager.getUserInfo((int) session.getAttribute("userId"), session);
+                manager.getUserInfo((int) session.getAttribute("userUserId"), session);
                 response.sendRedirect("/socialnet/timeline.jsp");
             } 
             else 

@@ -7,10 +7,14 @@ import java.time.format.DateTimeFormatter;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.http.HttpSession;
+
+
 
 
 /**
@@ -85,17 +89,60 @@ public class AdminDBManager
 
             // for the profile picture
             String directory = "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/";
-            String relativePath = pfp == null ? "socialnet/default_pfp.png" : pfp.substring(directory.length());
+            String relativePath = pfp == null ? "socialnet/profile_picture/default_pfp.png" : pfp.substring(directory.length());
     
             session.setAttribute("dob", dob);
             session.setAttribute("gender", gender);
-            session.setAttribute("pfp", relativePath);
+            session.setAttribute("admin-pfp", relativePath);
             session.setAttribute("roleID", roleID);
         }
     }
 
-    // TODO: Search for user
-    // TODO: Admin CRUD methods probably separate into their own file AdminDBManager.java
+    // Get all users
+    public List<User> getAllUsers() throws SQLException
+    {
+        List<User> userList = new ArrayList<>();
+        String tables = "user u";
+        String fields = "u.id, u.first_name, u.last_name, u.email, u.dob, u.gender, u.profile_picture, l.country, l.state, l.town, l.street, e.degree, e.field_of_study, e.school";
+        String locationJoin = "LEFT JOIN location l ON u.id = l.user_id";
+        String educationJoin = "LEFT JOIN education e ON u.id = e.user_id";
+
+        PreparedStatement st = dbConn.prepareStatement("SELECT " + fields + " FROM " + tables + " " + locationJoin + " " + educationJoin);
+        ResultSet rs = st.executeQuery();
+        
+        while(rs.next())
+        {
+            int id = rs.getInt("u.id");
+            Map<String, String> userInfo = new HashMap<>();
+
+            ResultSetMetaData rsm = rs.getMetaData();
+            int columnCount = rsm.getColumnCount();
+            for(int i = 1; i <= columnCount; i++)
+            {
+                String colName = rsm.getColumnName(i);
+                String colVal = rs.getString(colName);
+                userInfo.put(colName, colVal);
+            }
+
+            userList.add(new User(id, userInfo));
+        }
+
+        rs.close();
+        st.close();
+
+        return userList;
+    }
+
+    public void deleteUser(int userId) throws SQLException
+    {
+        String query = "DELETE FROM user WHERE id = ?";
+        PreparedStatement st = dbConn.prepareStatement(query);
+
+        st.setInt(1, userId);
+        st.executeUpdate();
+
+        st.close();
+    }
 
     /**
      *  Method that closes the connection to the database

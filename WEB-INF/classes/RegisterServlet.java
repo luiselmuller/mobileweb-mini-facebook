@@ -40,7 +40,14 @@ public class RegisterServlet extends HttpServlet
             // Verify if the user was added
             if (res > 0) 
             {
-                response.sendRedirect("/socialnet/login.jsp");
+                if("admin-registration".equals(request.getParameter("action")))
+                {
+                    response.sendRedirect("/socialnet/adminpanel.jsp");
+                }
+                else
+                {
+                    response.sendRedirect("/socialnet/login.jsp");
+                }
             } 
             else 
             {
