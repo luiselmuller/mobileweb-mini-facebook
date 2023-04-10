@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <%
-    if(session.getAttribute("email") != null)
+    if(session.getAttribute("roleId") != null && ((Integer) session.getAttribute("roleId")) == 1)
     {
-        response.sendRedirect("timeline.jsp");
+        response.sendRedirect("/socialnet/adminpanel.jsp");
+    }
+    else if(session.getAttribute("email") != null)
+    {
+        
     }
 %>
+
 
 <html lang="en">
     <head>

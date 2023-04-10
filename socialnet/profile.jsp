@@ -1,4 +1,8 @@
 <%
+    if(session.getAttribute("roleId") != null && ((Integer) session.getAttribute("roleId")) == 1)
+    {
+        response.sendRedirect("/socialnet/adminpanel.jsp");
+    }
     if(session.getAttribute("email") == null)
     {
         response.sendRedirect("login.jsp");
@@ -44,6 +48,21 @@
                     </button>
                 </div>
                 <form id="info-form" class="mb-12 flex flex-col justify-center items-center gap-5 w-full" action="/user/info/update" method="post"> 
+                    <div class="flex justify-center items-center gap-5 sm:max-w-[655px] w-full max-w-[250px]">
+                        <div class="w-full">
+                            <label for="fname" class="block text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                            <input required type="text" id="fname" name="fname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+                                block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                placeholder="Default" value='<%= session.getAttribute("firstName") %>'>
+                        </div>
+                        <div class="w-full">
+                            <label for="lname" class="block text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                            <input required type="text" id="lname" name="lname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+                                block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                placeholder="Name" value='<%= session.getAttribute("lastName") %>'>
+                        </div>
+
+                    </div>
                     <!-- Inputs -->
                     <div class="flex justify-center items-center gap-5 sm:flex-row flex-col">
                         <!-- Left col -->
@@ -405,10 +424,10 @@
                 </form>
 
                 <!-- Bottom form (file input) -->
-                <form id="pfp-form" action="/user/profile-picture/update" method="post" enctype="multipart/form-data" class="flex flex-col items-center justify-center gap-5 sm:max-w-[665px] w-full max-w-[250px]">
+                <form id="pfp" action="/user/profile-picture/update" method="post" enctype="multipart/form-data" class="flex flex-col items-center justify-center gap-5 sm:max-w-[665px] w-full max-w-[250px]">
                     <!-- Profile Picture -->
                     <div class="flex items-center justify-center w-full">
-                        <label for="pfp" class="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 
+                        <label for="user-pfp" class="flex flex-col items-center justify-center w-full h-44 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 
                             dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                 <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
@@ -416,7 +435,7 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">PNG or JPG</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Current image: <%= session.getAttribute("pfp") %></p>
                             </div>
-                            <input id="pfp" name="pfp" type="file" class="hidden" accept="image/gif, image/jpeg, image/png" value="<%= session.getAttribute("pfp") %>"/>
+                            <input id="user-pfp" name="user-pfp" type="file" class="hidden" accept="image/gif, image/jpeg, image/png" value="<%= session.getAttribute("pfp") %>"/>
                         </label>
                     </div> 
 

@@ -3,8 +3,8 @@
     // Get the roleID from the session attribute
     Integer roleId = (Integer) session.getAttribute("roleId");
 
-    // Check if the user is a regular user
-    if (roleId != null && roleId == 0) {
+    // Check if the user is logged in
+    if (roleId != null && roleId == 0 || roleId != null && roleId == 1) {
         response.sendRedirect("index.jsp");
     }
 
