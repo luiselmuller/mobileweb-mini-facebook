@@ -1,3 +1,14 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document contans the methods and classes for the User Management.
+ * 
+ */
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -12,7 +23,14 @@ import ut.JAR.socialnet.*;
 
 public class UserManagementServlet extends HttpServlet
 {
-
+    /**
+     * Handles GET requests for user management actions
+     * 
+     * @param request  HttpServletRequest object that contains the request information
+     * @param response HttpServletResponse object that contains the response 
+     * @throws ServletException if there is a servlet-related problem
+     * @throws IOException if there is an I/O problem
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         AdminDBManager manager = new AdminDBManager();

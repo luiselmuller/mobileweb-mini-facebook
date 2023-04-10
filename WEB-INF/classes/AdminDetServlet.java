@@ -1,22 +1,49 @@
-import java.io.IOException;
-import java.sql.SQLException;
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * This document is the class of the servlet handling request of the Administrator (admin) details 
+ * Handles Admin profile detail requests 
+ * 
+ */
 
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import javax.servlet.*;
-import java.util.ArrayList;
+import java.io.IOException;              //base class for exceptions thrown
+import java.sql.SQLException;            //for sql error exceptions
 
-import ut.JAR.socialnet.*;
+import javax.servlet.ServletException;   //for servlet exceptions
+import javax.servlet.http.*;             //for servlet classes running under HTTP
+import javax.servlet.*;                  //for creating servlets
+import java.util.ArrayList;              //for arrays
+
+import ut.JAR.socialnet.*;               //location of the socialnet java files
 
 public class AdminDetServlet extends HttpServlet
 {
     private static final long serialVersionUID = 13L;
 
+    /**
+     * This function handles the GET requests from administrator details
+     * 
+     * @param request : HTTPServletRequest object for request from client adminprofile
+     * @param response : HTTPServletResponse object for response of server to client from adminprofile
+     * @throws ServletException : thrown when server errors may occur when requesting
+     * @throws IOException : thrown when data transfer error may occur
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         request.getRequestDispatcher("/socialnet/adminprofile.jsp").forward(request, response);
     }
 
+    /**
+     * This function handles the POST requests from administrator to update details 
+     * @param request : HTTPServletRequest object for request from client adminprofile
+     * @param response : HTTPServletResponse object for response of server to client from adminprofile
+     * @throws ServletException : thrown when server errors may occur when requesting
+     * @throws IOException : thrown when data transfer error may occur
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
