@@ -25,11 +25,14 @@ public class UserImageServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        ApplicationDBManager manager = new ApplicationDBManager();
+
         // Get session attribute for user id
         HttpSession session = request.getSession();
-        int userId = (int) session.getAttribute("userId");
+        int userId = session.getAttribute("userUserId") == null ? Integer.parseInt(request.getParameter("userUserId")) : (int) session.getAttribute("userUserId");
 
-        Part file = request.getPart("pfp");
+        
+        Part file = request.getPart("user-pfp");
 
         String name = getFileName(file);
         String type = file.getContentType();
@@ -64,7 +67,6 @@ public class UserImageServlet extends HttpServlet
             // Update user info
             try
             {
-                ApplicationDBManager manager = new ApplicationDBManager();
                 manager.updateUserImage(userId, path);
                 manager.close();
             }
@@ -75,10 +77,25 @@ public class UserImageServlet extends HttpServlet
         }
         else
         {
-            response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Only PNG, JPG, and GIF images are supported.");
-            return;
+            try
+            {
+                manager.updateUserImage(userId, "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/");
+                manager.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-        response.sendRedirect("/socialnet/profile.jsp");
+        
+        if("admin-modification".equals(request.getParameter("action")))
+        {
+            response.sendRedirect("/socialnet/usermanager.jsp");
+        }
+        else
+        {
+            response.sendRedirect("/socialnet/profile.jsp");
+        }
     }
 
     private String sanitizeFileName(String name)

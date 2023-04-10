@@ -46,14 +46,4 @@ public class AdminDetServlet extends HttpServlet
 
         response.sendRedirect("/socialnet/adminprofile.jsp");
     }
-
-
-
-
-    
-
-
-
-
-
 }

@@ -2,12 +2,16 @@ package ut.JAR.socialnet;
 
 // Package for managing ResultSet objects
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.http.HttpSession;
@@ -94,18 +98,19 @@ public class ApplicationDBManager
             userId = keys.getInt(1);
         }
 
-		System.out.println("Insertion result" + i + " userId:" + userId);
         return userId;
 	}
 
-    // dob, gender, pfp
-    public void updateUserInfo(int userId, String dob, String gender) throws SQLException
+    // dob, gender, pfp, name, lname
+    public void updateUserInfo(int userId, String dob, String gender, String fname, String lname) throws SQLException
     {
-        String updateQuery = "UPDATE user SET dob = ?, gender = ? WHERE id = ?";
+        String updateQuery = "UPDATE user SET dob = ?, gender = ?, first_name = ?, last_name = ? WHERE id = ?";
         PreparedStatement ust = dbConn.prepareStatement(updateQuery);
         ust.setString(1, dob);
         ust.setString(2, gender);
-        ust.setInt(3, userId);
+        ust.setString(3, fname);
+        ust.setString(4, lname);
+        ust.setInt(5, userId);
         ust.executeUpdate();
     }
 
@@ -168,8 +173,8 @@ public class ApplicationDBManager
             String updateQuery = "UPDATE education SET field_of_study = ?, school = ?, degree = ? WHERE id = ?";
             PreparedStatement ust = dbConn.prepareStatement(updateQuery);
             ust.setString(1, fieldOfStudy);
-            ust.setString(2, degree);
-            ust.setString(3, school);
+            ust.setString(2, school);
+            ust.setString(3, degree);
             ust.setInt(4, eduId);
             ust.executeUpdate();
         }
@@ -180,8 +185,8 @@ public class ApplicationDBManager
             PreparedStatement ist = dbConn.prepareStatement(insertQuery);
             ist.setInt(1, userId);
             ist.setString(2, fieldOfStudy);
-            ist.setString(3, degree);
-            ist.setString(4, school);
+            ist.setString(3, school);
+            ist.setString(4, degree);
             ist.executeUpdate();
         }
     }
@@ -213,7 +218,7 @@ public class ApplicationDBManager
 
             // for the profile picture
             String directory = "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/";
-            String relativePath = pfp == null ? "socialnet/default_pfp.png" : pfp.substring(directory.length());
+            String relativePath = pfp == null ? "socialnet/profile_picture/default_pfp.png" : pfp.substring(directory.length());
     
             session.setAttribute("dob", dob);
             session.setAttribute("gender", gender);
@@ -228,8 +233,94 @@ public class ApplicationDBManager
         }
     }
 
-    // TODO: Search for user
-    // TODO: Admin CRUD methods probably separate into their own file AdminDBManager.java
+    // Get all users
+    public List<User> userSearch(String category, String searchQuery) throws SQLException 
+    {
+        List<User> userList = new ArrayList<>();
+    
+        String tables = "user u";
+        String fields = "u.id, u.first_name, u.last_name, u.email, u.dob, u.gender, u.profile_picture, l.country, l.state, l.town, l.street, e.degree, e.field_of_study, e.school";
+        String locationJoin = "LEFT JOIN location l ON u.id = l.user_id";
+        String educationJoin = "LEFT JOIN education e ON u.id = e.user_id";
+    
+        String query = "SELECT " + fields + " FROM " + tables + " " + locationJoin + " " + educationJoin;
+
+        if ("first_name".equals(category)) 
+        {
+            query += " WHERE u.first_name LIKE ?";
+        } 
+        else if ("last_name".equals(category)) 
+        {
+            query += " WHERE u.last_name LIKE ?";
+        } 
+        else if ("gender".equals(category)) 
+        {
+            query += " WHERE u.gender = ?";
+        } 
+        else if ("country".equals(category)) 
+        {
+            query += " WHERE l.country LIKE ?";
+        } 
+        else if ("state".equals(category)) 
+        {
+            query += " WHERE l.state LIKE ?";
+        } 
+        else if ("street".equals(category)) 
+        {
+            query += " WHERE l.street LIKE ?";
+        } 
+        else if ("town".equals(category)) 
+        {
+            query += " WHERE l.town LIKE ?";
+        } 
+        else if ("degree".equals(category)) 
+        {
+            query += " WHERE e.degree LIKE ?";
+        } 
+        else if ("field_of_study".equals(category)) 
+        {
+            query += " WHERE e.field_of_study LIKE ?";
+        } 
+        else if ("school".equals(category)) 
+        {
+            query += " WHERE e.school LIKE ?";
+        }
+
+        PreparedStatement st = dbConn.prepareStatement(query);
+
+        if("gender".equals(category))
+        {
+            st.setString(1, searchQuery);
+        }
+        else
+        {
+            st.setString(1, "%" + searchQuery + "%");
+        }
+    
+        ResultSet rs = st.executeQuery();
+        while (rs.next()) 
+        {
+            int id = rs.getInt("u.id");
+            Map<String, String> userInfo = new HashMap<>();
+    
+            ResultSetMetaData rsm = rs.getMetaData();
+            int columnCount = rsm.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) 
+            {
+                String colName = rsm.getColumnName(i);
+                String colVal = rs.getString(colName);
+                userInfo.put(colName, colVal);
+            }
+    
+            userList.add(new User(id, userInfo));
+        }
+    
+        rs.close();
+        st.close();
+    
+        
+        return userList;
+    }
 
     /**
      *  Method that closes the connection to the database
@@ -252,35 +343,5 @@ public class ApplicationDBManager
 	public static void main(String[] args)
 	{
 		
-		try
-        {
-			// Create a applicationDBManager object
-			ApplicationDBManager manager = new ApplicationDBManager();
-			System.out.println("Connecting...");
-			System.out.println(manager.toString());
-			
-			// Call the listAllDepartment in order to retrieve all departments in the database
-			//ResultSet res = manager.listAllRoles();
-			
-			// Iterate over the ResulSet containing all departments in the database, and count how many tuples were retrieved
-			int count=0;
-			// while (res.next())
-            // {
-			// 	count++;	
-			// }
-			// //Print the results count
-			// System.out.println("Count:"  + count);
-			
-			// // Close the ResulSet
-			// res.close();
-			// // Close the database connection
-			manager.close();
-			
-		} 
-        catch(Exception e)
-		{
-			// Nothing to show!
-			e.printStackTrace();
-		}		
 	}
 }

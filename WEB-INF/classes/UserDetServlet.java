@@ -27,11 +27,15 @@ public class UserDetServlet extends HttpServlet
     {
         // Get session attribute for user id
         HttpSession session = request.getSession();
-        int userId = (int) session.getAttribute("userId");
+        int userId = session.getAttribute("userUserId") == null ? Integer.parseInt(request.getParameter("userUserId")) : (int) session.getAttribute("userUserId");
+
 
         // Get form values
         String dob = request.getParameter("dob");
         String gender = request.getParameter("gender");
+
+        String firstName = request.getParameter("fname");
+        String lastName = request.getParameter("lname");
 
         String country = request.getParameter("country");
         String street = request.getParameter("street");
@@ -46,7 +50,7 @@ public class UserDetServlet extends HttpServlet
         try
         {
             ApplicationDBManager manager = new ApplicationDBManager();
-            manager.updateUserInfo(userId, dob, gender);
+            manager.updateUserInfo(userId, dob, gender, firstName, lastName);
             manager.updateUserLocation(userId, country, street, town, state);
             manager.updateUserEducation(userId, fieldOfStudy, degree, school);
             manager.close();
@@ -59,6 +63,8 @@ public class UserDetServlet extends HttpServlet
         // Set the fields in the form to the user data
         session.setAttribute("dob", dob);
         session.setAttribute("gender", gender);
+        session.setAttribute("firstName", firstName);
+        session.setAttribute("lastName", lastName);
 
         session.setAttribute("country", country);
         session.setAttribute("street", street);
@@ -69,7 +75,15 @@ public class UserDetServlet extends HttpServlet
         session.setAttribute("degree", degree);
         session.setAttribute("school", school);
 
-        response.sendRedirect("/socialnet/profile.jsp");
+        if("admin-modification".equals(request.getParameter("action")))
+        {
+            response.sendRedirect("/socialnet/usermanager.jsp");
+        }
+        else
+        {
+            response.sendRedirect("/socialnet/profile.jsp");
+        }
+        
     }
 
 

@@ -30,6 +30,8 @@ public class AdminImageServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        AdminDBManager manager = new AdminDBManager();
+
         // Get session attribute for user id
         HttpSession session = request.getSession();
         int userId = (int) session.getAttribute("userId");
@@ -64,12 +66,11 @@ public class AdminImageServlet extends HttpServlet
             
             String directory = "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/";
             String relativePath = path.substring(directory.length());
-            session.setAttribute("pfp", relativePath);
+            session.setAttribute("admin-pfp", relativePath);
 
             // Update user info
             try
             {
-                AdminDBManager manager = new AdminDBManager();
                 manager.updateAdminImage(userId, path);
                 manager.close();
             }
@@ -80,8 +81,15 @@ public class AdminImageServlet extends HttpServlet
         }
         else
         {
-            response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Only PNG, JPG, and GIF images are supported.");
-            return;
+            try
+            {
+                manager.updateAdminImage(userId, "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/");
+                manager.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
         response.sendRedirect("/socialnet/adminprofile.jsp");
     }
