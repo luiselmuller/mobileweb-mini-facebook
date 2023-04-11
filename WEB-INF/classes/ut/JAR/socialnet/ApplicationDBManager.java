@@ -1,3 +1,15 @@
+/**
+ * Social Network Project # 1
+ * Mobile Web Course CPEN410
+ * 
+ * @author Luisel Muller
+ * @author Ian Colon
+ *
+ * ApplicationDBManager class manages the connection to the database and is accessed 
+ * from the front end without showing how to access the database.
+ * The class includes methods for adding a user to the database, updating user information, 
+ * updating user images, updating user location, and updating user education.
+ */
 package ut.JAR.socialnet;
 
 // Package for managing ResultSet objects
@@ -48,14 +60,15 @@ public class ApplicationDBManager
      ***************************************************************************/
 
     /**
-     * 
-     * @param email
-     * @param password
-     * @param first_name
-     * @param last_name
-     * @return
-     * @throws SQLException
-     */
+     * Adds a user to the database with the specified email, password, first name, and last name.
+    * 
+    * @param email the user's email
+    * @param password the user's password
+    * @param first_name the user's first name
+    * @param last_name the user's last name
+    * @return the ID of the newly created user or -1 if the user already exists in the database
+    * @throws SQLException if there is an error with the SQL query
+    */
     public int addUser(String email, String password, String first_name, String last_name) throws SQLException
 	{
         String query = "INSERT INTO user (email, password, first_name, last_name, salt) VALUES (?, ?, ?, ?, ?)";
@@ -101,7 +114,16 @@ public class ApplicationDBManager
         return userId;
 	}
 
-    // dob, gender, pfp, name, lname
+    /**
+    * Updates a user's information in the database with the specified ID.
+    *   
+    * @param userId the user's ID
+    * @param dob the user's date of birth
+    * @param gender the user's gender
+    * @param fname the user's first name
+    * @param lname the user's last name
+    * @throws SQLException if there is an error with the SQL query
+    */
     public void updateUserInfo(int userId, String dob, String gender, String fname, String lname) throws SQLException
     {
         String updateQuery = "UPDATE user SET dob = ?, gender = ?, first_name = ?, last_name = ? WHERE id = ?";
@@ -114,6 +136,13 @@ public class ApplicationDBManager
         ust.executeUpdate();
     }
 
+    /**
+    * Updates a user's image in the database with the specified ID.
+    * 
+    * @param userId the user's ID
+    * @param pfp the user's profile picture
+    * @throws SQLException if there is an error with the SQL query
+    */
     public void updateUserImage(int userId, String pfp) throws SQLException
     {
         String updateQuery = "UPDATE user SET profile_picture = ? WHERE id = ?";
@@ -124,6 +153,16 @@ public class ApplicationDBManager
     }
 
     // country, street, town, state
+    /**
+    * Updates a user's location in the database with the specified ID.
+    * 
+    * @param userId the user's ID
+    * @param country the user's country
+    * @param street the user's street
+    * @param town the user's town
+    * @param state the user's state
+    * @throws SQLException if there is an error with the SQL query
+    */
     public void updateUserLocation(int userId, String country, String street, String town, String state) throws SQLException
     {
         String check = "SELECT * FROM location WHERE user_id = ?";
@@ -158,7 +197,16 @@ public class ApplicationDBManager
         }
     }
 
-    // fos, degree, school
+    
+    /**
+    * Updates a user's education in the database with the specified ID.
+    * 
+    * @param userId the user's ID
+    * @param fieldOfStudy the user's field of study
+    * @param degree the user's degree
+    * @param school the user's school
+    * @throws SQLException if there is an error with the SQL query
+    */
     public void updateUserEducation(int userId, String fieldOfStudy, String degree, String school) throws SQLException
     {
         String check = "SELECT * FROM education WHERE user_id = ?";
@@ -191,6 +239,13 @@ public class ApplicationDBManager
         }
     }
 
+    /**
+    * Retrieves information about a user from the database and stores it in a HttpSession object.
+    *
+    * @param userId the ID of the user to retrieve information for
+    * @param session the HttpSession object to store the retrieved information in
+    * @throws SQLException if an error occurs while retrieving the information from the database
+    */
     public void getUserInfo(int userId, HttpSession session) throws SQLException
     {
         String tables = "user u JOIN location l ON u.id = l.user_id JOIN education e ON u.id = e.user_id";
@@ -234,6 +289,15 @@ public class ApplicationDBManager
     }
 
     // Get all users
+    /**
+     * Function for user search based on query, searches categories:
+     * first_name, last_name, gender, country, state, street, town, degree, 
+     * field_of_study, school
+     * 
+     * @param searchQuery the search query to use.
+     * @return a list of User objects that match the search criteria.
+     * @throws SQLException if an error occurs while executing the SQL query.
+     */
     public List<User> userSearch(String category, String searchQuery) throws SQLException 
     {
         List<User> userList = new ArrayList<>();
@@ -324,8 +388,6 @@ public class ApplicationDBManager
 
     /**
      *  Method that closes the connection to the database
-     *  @parameters:
-     *  @returns:
      */
     public void close()
     {
@@ -338,7 +400,6 @@ public class ApplicationDBManager
 			This method creates an applicationDBManager object, retrieves all departments in the database, and close the connection to the database
 			@parameters:
 				args[]: String array 
-			@returns:
 	*/
 	public static void main(String[] args)
 	{
