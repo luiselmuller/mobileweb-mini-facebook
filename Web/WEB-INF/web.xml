@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1"
+  metadata-complete="true">
+
+  <display-name>Welcome to Tomcat</display-name>
+  <description>
+     Welcome to Tomcat
+  </description>
+  
+  <!-- USER SERVLETS -->
+
+  <servlet>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>RegisterServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>/register/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>VerifyServlet</servlet-name>
+    <servlet-class>VerifyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VerifyServlet</servlet-name>
+    <url-pattern>/auth/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserDetServlet</servlet-name>
+    <servlet-class>UserDetServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserDetServlet</servlet-name>
+    <url-pattern>/user/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserSearchServlet</servlet-name>
+    <servlet-class>UserSearchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserSearchServlet</servlet-name>
+    <url-pattern>/search/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserImageServlet</servlet-name>
+    <servlet-class>UserImageServlet</servlet-class>
+    <multipart-config>
+      <location>D:\apache-tomcat-8.5.85\webapps\ROOT\socialnet\profile_pictures\</location>
+      <max-file-size>20848820</max-file-size>
+      <max-request-size>418018841</max-request-size>
+      <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserImageServlet</servlet-name>
+    <url-pattern>/user/profile-picture/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- ADMIN SERVLETS -->
+
+  <servlet>
+    <servlet-name>AdminVerifyServlet</servlet-name>
+    <servlet-class>AdminVerifyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminVerifyServlet</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AdminDetServlet</servlet-name>
+    <servlet-class>AdminDetServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminDetServlet</servlet-name>
+    <url-pattern>/admin/info/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AdminImageServlet</servlet-name>
+    <servlet-class>AdminImageServlet</servlet-class>
+    <multipart-config>
+      <location>D:\apache-tomcat-8.5.85\webapps\ROOT\socialnet\profile_pictures\</location>
+      <max-file-size>20848820</max-file-size>
+      <max-request-size>418018841</max-request-size>
+      <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminImageServlet</servlet-name>
+    <url-pattern>/admin/profile-picture/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserManagementServlet</servlet-name>
+    <servlet-class>UserManagementServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserManagementServlet</servlet-name>
+    <!-- done like this so users don't get redirected to a broken page url -->
+    <url-pattern>/socialnet/usermanager/*</url-pattern> 
+  </servlet-mapping>
+  
+</web-app>
