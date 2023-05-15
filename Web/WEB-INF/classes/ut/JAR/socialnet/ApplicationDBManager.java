@@ -194,17 +194,22 @@ public class ApplicationDBManager
     public void getUserInfo(int userId, HttpSession session) throws SQLException
     {
         String tables = "user u JOIN location l ON u.id = l.user_id JOIN education e ON u.id = e.user_id";
-        String fields = "u.id, u.role_id, u.dob, u.gender, u.profile_picture, l.country, l.street, l.town, l.state, e.field_of_study, e.degree, e.school";
+        String fields = "u.id, u.first_name, u.last_name, u.role_id, u.dob, u.gender, u.profile_picture, l.country, l.street, l.town, l.state, e.field_of_study, e.degree, e.school";
         String whereClause = "u.id = ?";
+
 
         PreparedStatement ps = dbConn.prepareStatement("SELECT " + fields + " FROM " + tables + " WHERE " + whereClause);
 
         ps.setInt(1, userId);
 
+
         ResultSet rs = ps.executeQuery();
+
 
         if(rs.next())
         {
+            String fname = rs.getString("first_name");
+            String lname = rs.getString("last_name");
             String dob = rs.getString("dob");
             String gender = rs.getString("gender");
             String pfp = rs.getString("profile_picture");
@@ -220,6 +225,8 @@ public class ApplicationDBManager
             String directory = "D:/apache-tomcat-8.5.85/webapps/ROOT/socialnet/";
             String relativePath = pfp == null ? "socialnet/profile_picture/default_pfp.png" : pfp.substring(directory.length());
     
+            session.setAttribute("fname", fname);
+            session.setAttribute("lname", lname);
             session.setAttribute("dob", dob);
             session.setAttribute("gender", gender);
             session.setAttribute("pfp", relativePath);
@@ -231,96 +238,85 @@ public class ApplicationDBManager
             session.setAttribute("degree", degree);
             session.setAttribute("school", school);
         }
+
     }
 
-    // Get all users
-    public List<User> userSearch(String category, String searchQuery) throws SQLException 
-    {
-        List<User> userList = new ArrayList<>();
+// Get all users
+public List<User> userSearch(String searchQuery) throws SQLException {
+    List<User> userList = new ArrayList<>();
     
-        String tables = "user u";
-        String fields = "u.id, u.first_name, u.last_name, u.email, u.dob, u.gender, u.profile_picture, l.country, l.state, l.town, l.street, e.degree, e.field_of_study, e.school";
-        String locationJoin = "LEFT JOIN location l ON u.id = l.user_id";
-        String educationJoin = "LEFT JOIN education e ON u.id = e.user_id";
+    String tables = "user u";
+    String fields = "u.id, u.first_name, u.last_name, u.dob, u.gender, u.profile_picture, l.country, l.state, l.town, l.street, e.degree, e.field_of_study, e.school";
+    String locationJoin = "LEFT JOIN location l ON u.id = l.user_id";
+    String educationJoin = "LEFT JOIN education e ON u.id = e.user_id";
     
-        String query = "SELECT " + fields + " FROM " + tables + " " + locationJoin + " " + educationJoin;
-
-        if ("first_name".equals(category)) 
-        {
-            query += " WHERE u.first_name LIKE ?";
-        } 
-        else if ("last_name".equals(category)) 
-        {
-            query += " WHERE u.last_name LIKE ?";
-        } 
-        else if ("gender".equals(category)) 
-        {
-            query += " WHERE u.gender = ?";
-        } 
-        else if ("country".equals(category)) 
-        {
-            query += " WHERE l.country LIKE ?";
-        } 
-        else if ("state".equals(category)) 
-        {
-            query += " WHERE l.state LIKE ?";
-        } 
-        else if ("street".equals(category)) 
-        {
-            query += " WHERE l.street LIKE ?";
-        } 
-        else if ("town".equals(category)) 
-        {
-            query += " WHERE l.town LIKE ?";
-        } 
-        else if ("degree".equals(category)) 
-        {
-            query += " WHERE e.degree LIKE ?";
-        } 
-        else if ("field_of_study".equals(category)) 
-        {
-            query += " WHERE e.field_of_study LIKE ?";
-        } 
-        else if ("school".equals(category)) 
-        {
-            query += " WHERE e.school LIKE ?";
-        }
-
-        PreparedStatement st = dbConn.prepareStatement(query);
-
-        if("gender".equals(category))
-        {
-            st.setString(1, searchQuery);
-        }
-        else
-        {
-            st.setString(1, "%" + searchQuery + "%");
-        }
+    String query = "SELECT " + fields + " FROM " + tables + " " + locationJoin + " " + educationJoin;
     
-        ResultSet rs = st.executeQuery();
-        while (rs.next()) 
-        {
-            int id = rs.getInt("u.id");
-            Map<String, String> userInfo = new HashMap<>();
+    int searchAge = -1;
+    try {
+        searchAge = Integer.parseInt(searchQuery);
+    } catch (NumberFormatException e) {
+        // search query is not a valid age, continue without searching by age
+    }
     
-            ResultSetMetaData rsm = rs.getMetaData();
-            int columnCount = rsm.getColumnCount();
-            for (int i = 1; i <= columnCount; i++) 
-            {
-                String colName = rsm.getColumnName(i);
-                String colVal = rs.getString(colName);
-                userInfo.put(colName, colVal);
-            }
-    
-            userList.add(new User(id, userInfo));
-        }
-    
-        rs.close();
-        st.close();
-    
+    if (searchQuery.isEmpty() && searchAge < 0) {
+        query += " WHERE 1";
+    } else {
+        boolean hasWhere = false;
         
-        return userList;
+        if (!searchQuery.isEmpty() && searchAge < 0) {
+            query += " WHERE u.first_name LIKE ? OR u.last_name LIKE ? OR CONCAT(u.first_name, ' ', u.last_name) LIKE ?";
+            query += " OR l.country LIKE ? OR l.state LIKE ? OR l.town LIKE ? OR l.street LIKE ?";
+            query += " OR e.school LIKE ? OR e.degree LIKE ? OR e.field_of_study LIKE ?";
+            query += " OR u.gender LIKE ?";
+            hasWhere = true;
+        }
+        
+        if (searchAge >= 0) {
+            if (hasWhere) {
+                query += " AND ";
+            } else {
+                query += " WHERE ";
+            }
+            query += " WHERE DATEDIFF(CURDATE(), STR_TO_DATE(u.dob, '%m/%d/%Y')/365.25) = ?";
+
+        }
+        System.out.println("SEARCH QUERY: " + query);
     }
+    
+    PreparedStatement st = dbConn.prepareStatement(query);
+    int paramIndex = 1;
+    
+    if (!searchQuery.isEmpty() && searchAge < 0) {
+        for (int i = 1; i <= 10; i++) {
+            st.setString(paramIndex++, "%" + searchQuery + "%");
+        }
+        st.setString(paramIndex++, searchQuery);
+    }
+    
+    ResultSet rs = st.executeQuery();
+    while (rs.next()) {
+        int id = rs.getInt("u.id");
+        Map<String, String> userInfo = new HashMap<>();
+        
+        ResultSetMetaData rsm = rs.getMetaData();
+        int columnCount = rsm.getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            String colName = rsm.getColumnName(i);
+            String colVal = rs.getString(colName);
+            userInfo.put(colName, colVal);
+        }
+        
+        userList.add(new User(id, userInfo));
+    }
+    
+    rs.close();
+    st.close();
+    
+    return userList;
+}
+
+
 
     /**
      *  Method that closes the connection to the database

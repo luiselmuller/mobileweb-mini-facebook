@@ -56,33 +56,37 @@ public class UserDetServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        System.out.println("USER DETAILS UPDATE REQUEST");
         // Get session attribute for user id
         HttpSession session = request.getSession();
+        
         int userId = session.getAttribute("userUserId") == null ? Integer.parseInt(request.getParameter("userUserId")) : (int) session.getAttribute("userUserId");
 
-
+        System.out.println("GETTING PARAMETERS");
+        String firstName = request.getParameter("fname");
+        String lastName = request.getParameter("lname");
         // Get form values
         String dob = request.getParameter("dob");
         String gender = request.getParameter("gender");
-
-        String firstName = request.getParameter("fname");
-        String lastName = request.getParameter("lname");
-
         String country = request.getParameter("country");
         String street = request.getParameter("street");
         String town = request.getParameter("town");
         String state = request.getParameter("state");
-
         String fieldOfStudy = request.getParameter("fieldOfStudy");
         String degree = request.getParameter("degree");
         String school = request.getParameter("school");
 
+        System.out.println("GOT PARAMETERS");
         // Update user info
         try
         {
+            System.out.println("UPDATING INFO");
             ApplicationDBManager manager = new ApplicationDBManager();
+            System.out.println("UPDATING USER INFO");
             manager.updateUserInfo(userId, dob, gender, firstName, lastName);
+            System.out.println("UPDATING LOCATION");
             manager.updateUserLocation(userId, country, street, town, state);
+            System.out.println("UPDATING EDUCATION");
             manager.updateUserEducation(userId, fieldOfStudy, degree, school);
             manager.close();
         }
@@ -91,11 +95,12 @@ public class UserDetServlet extends HttpServlet
             e.printStackTrace();
         }
 
+        System.out.println("SETTING SESSION ATTRIBUTES");
         // Set the fields in the form to the user data
         session.setAttribute("dob", dob);
         session.setAttribute("gender", gender);
-        session.setAttribute("firstName", firstName);
-        session.setAttribute("lastName", lastName);
+        session.setAttribute("fname", firstName);
+        session.setAttribute("lname", lastName);
 
         session.setAttribute("country", country);
         session.setAttribute("street", street);
@@ -106,6 +111,7 @@ public class UserDetServlet extends HttpServlet
         session.setAttribute("degree", degree);
         session.setAttribute("school", school);
 
+        System.out.println("DONE");
         if("admin-modification".equals(request.getParameter("action")))
         {
             response.sendRedirect("/socialnet/usermanager.jsp");
@@ -116,14 +122,5 @@ public class UserDetServlet extends HttpServlet
         }
         
     }
-
-
-
-
-    
-
-
-
-
 
 }

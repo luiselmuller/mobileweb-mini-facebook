@@ -55,6 +55,7 @@ public class RegisterServlet extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
 
+        String msg = "";
         // Retrieve variables
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -72,21 +73,38 @@ public class RegisterServlet extends HttpServlet
             // Verify if the user was added
             if (res > 0) 
             {
-                if("admin-registration".equals(request.getParameter("action")))
+                if(request.getHeader("User-Agent").contains("Android"))
                 {
-                    response.sendRedirect("/socialnet/adminpanel.jsp");
-                }
-                else
+                    msg = "ok";
+                    response.getWriter().write(msg);
+                } 
+                else 
                 {
-                    response.sendRedirect("/socialnet/login.jsp");
+                    if("admin-registration".equals(request.getParameter("action")))
+                    {
+                        response.sendRedirect("/socialnet/adminpanel.jsp");
+                    }
+                    else
+                    {
+                        response.sendRedirect("/socialnet/login.jsp");
+                    }
                 }
+                
             } 
             else 
             {
                 // Close associated sessions
                 HttpSession session = request.getSession();
                 session.setAttribute("email", null);
-                response.getWriter().println("Cannot add user");
+                
+                if(request.getHeader("User-Agent").contains("Android"))
+                {
+                    msg = "not";
+                    response.getWriter().write(msg);
+                } 
+                else {
+                    response.getWriter().println("Cannot add user");
+                }
             }
 
             // Close database connection

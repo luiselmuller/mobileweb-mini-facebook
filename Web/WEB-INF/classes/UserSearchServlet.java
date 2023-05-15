@@ -48,16 +48,31 @@ public class UserSearchServlet extends HttpServlet
     {
         ApplicationDBManager manager = new ApplicationDBManager();
 
-        String category = request.getParameter("search-category");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         String parameter = request.getParameter("search");
         
         HttpSession session = request.getSession();
-        session.setAttribute("category", category);
+
+        String msg = "";
 
         try 
         {
-            List<User> userList = manager.userSearch(category, parameter.replaceAll("[^a-zA-Z0-9.-]", "_"));
+            List<User> userList = manager.userSearch(parameter.replaceAll("[^a-zA-Z0-9.-]", "_"));
             request.setAttribute("userList", userList);
+            if(request.getHeader("User-Agent").contains("Android"))
+            {
+                msg = "{\"userList\": [";
+                for(int i = 0; i < userList.size(); i++)
+                {
+                    msg += "\"user" + i + "\":\"" + userList.get(i) + "\"}, "; 
+                }
+                msg += "]}";
+                System.out.println("MOBILE RESPONSE: " + msg);
+                response.getWriter().write(msg);
+            }
+
         } 
         catch (SQLException e) 
         {

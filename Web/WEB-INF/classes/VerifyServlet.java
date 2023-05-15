@@ -11,7 +11,9 @@
  */
 
  import java.io.IOException;              //base class for exceptions thrown
- import javax.servlet.ServletException;   //for servlet exceptions
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;   //for servlet exceptions
  import javax.servlet.http.*;             //for servlet classes running under HTTP
  import javax.servlet.*;                  //for creating servlets
  
@@ -41,7 +43,7 @@ public class VerifyServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
         // Forward to the signup page
-        request.getRequestDispatcher("/socialnet/login.jsp").forward(request, response);
+        
     }
 
     /**
@@ -61,14 +63,18 @@ public class VerifyServlet extends HttpServlet
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
-
         // Retrieve variables
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
         // Create the authenticator object
         UserAuthenticator auth = new UserAuthenticator();
         ApplicationDBManager manager = new ApplicationDBManager();
+
+        String msg = "";
 
         try 
         {
@@ -78,21 +84,62 @@ public class VerifyServlet extends HttpServlet
             // Verify the user
             if (res[0] > 0) 
             {
-                // Set session attribute
                 HttpSession session = request.getSession();
+
                 session.setAttribute("email", email);
-                session.setAttribute("userUserId", res[0]);
+                System.out.println(res[0]);
+                session.setAttribute("userUserId", (int) res[0]);
+                System.out.println(session.getAttribute("userUserId"));
                 session.setAttribute("roleId", res[1]);
                 manager.getUserInfo((int) session.getAttribute("userUserId"), session);
-                response.sendRedirect("/socialnet/timeline.jsp");
+
+                
+                if(request.getHeader("User-Agent").contains("Android"))
+                {
+                    msg = "{\"userInfo\": [{";
+                    msg += "\"fname\":\"" + session.getAttribute("fname") + "\"}, ";
+                    msg += "{\"lname\":\"" + session.getAttribute("lname") + "\"}, ";
+                    msg += "{\"dob\":\"" + session.getAttribute("dob") + "\"}, ";
+                    msg += "{\"gender\":\"" + session.getAttribute("gender") + "\"}, ";
+                    msg += "{\"country\":\"" + session.getAttribute("country") + "\"}, ";
+                    msg += "{\"street\":\"" + session.getAttribute("street") + "\"}, ";
+                    msg += "{\"town\":\"" + session.getAttribute("town") + "\"}, ";
+                    msg += "{\"state\":\"" + session.getAttribute("state") + "\"}, ";
+                    msg += "{\"fieldOfStudy\":\"" + session.getAttribute("fieldOfStudy") + "\"}, ";
+                    msg += "{\"degree\":\"" + session.getAttribute("degree") + "\"}, ";
+                    msg += "{\"school\":\"" + session.getAttribute("school") + "\"}, ";
+                    msg += "{\"id\":\"" + session.getAttribute("userUserId") + "\"";
+                    msg += "}]}";
+                    response.getWriter().write(msg);
+                } 
+                else 
+                {
+                    response.sendRedirect("/socialnet/timeline.jsp");
+                }
+                
+                
             } 
             else 
             {
+                
                 // Close associated sessions
                 HttpSession session = request.getSession();
                 session.setAttribute("email", null);
-                response.sendRedirect("/socialnet/login.jsp");
+
+                if(request.getHeader("User-Agent").contains("Android"))
+                {
+                    msg = "not";
+                    response.getWriter().write(msg);
+                } 
+                else 
+                {
+                    response.sendRedirect("/socialnet/login.jsp");
+                }
+                
             }
+            
+
+            
 
             // Close database connection
             auth.close();
@@ -103,6 +150,7 @@ public class VerifyServlet extends HttpServlet
             session.setAttribute("email", null);
             response.sendRedirect("/socialnet/index.jsp");
             e.printStackTrace();
-        } 
+            System.out.println("EXCEPTION");                    
+        }
     }
 }

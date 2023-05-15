@@ -124,5 +124,7 @@
     <!-- done like this so users don't get redirected to a broken page url -->
     <url-pattern>/socialnet/usermanager/*</url-pattern> 
   </servlet-mapping>
+
+  
   
 </web-app>
